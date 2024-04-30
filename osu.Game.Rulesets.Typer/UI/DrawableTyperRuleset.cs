@@ -24,7 +24,7 @@ namespace osu.Game.Rulesets.Typer.UI
             : base(ruleset, beatmap, mods)
         {
             Direction.Value = ScrollingDirection.Left;
-            TimeRange.Value = 12000;
+            TimeRange.Value = 10000;
         }
 
         protected override Playfield CreatePlayfield() => new TyperPlayfield();
