@@ -7,7 +7,7 @@ using osu.Game.Rulesets.UI;
 
 namespace osu.Game.Rulesets.Typer
 {
-    public class TyperInputManager : RulesetInputManager<TyperAction>
+    public partial class TyperInputManager : RulesetInputManager<TyperAction>
     {
         public TyperInputManager(RulesetInfo ruleset)
             : base(ruleset, 0, SimultaneousBindingMode.Unique)

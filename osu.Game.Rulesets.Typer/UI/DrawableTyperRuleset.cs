@@ -18,7 +18,7 @@ using osu.Game.Rulesets.UI.Scrolling;
 namespace osu.Game.Rulesets.Typer.UI
 {
     [Cached]
-    public class DrawableTyperRuleset : DrawableScrollingRuleset<TyperHitObject>
+    public partial class DrawableTyperRuleset : DrawableScrollingRuleset<TyperHitObject>
     {
         public DrawableTyperRuleset(TyperRuleset ruleset, IBeatmap beatmap, IReadOnlyList<Mod> mods = null)
             : base(ruleset, beatmap, mods)

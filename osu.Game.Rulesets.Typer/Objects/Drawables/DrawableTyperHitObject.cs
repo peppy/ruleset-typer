@@ -16,7 +16,7 @@ using osuTK.Input;
 
 namespace osu.Game.Rulesets.Typer.Objects.Drawables
 {
-    public class DrawableTyperHitObject : DrawableHitObject<TyperHitObject>
+    public partial class DrawableTyperHitObject : DrawableHitObject<TyperHitObject>
     {
         private readonly char keyToHit;
 

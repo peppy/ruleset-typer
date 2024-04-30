@@ -13,7 +13,7 @@ using osuTK.Graphics;
 namespace osu.Game.Rulesets.Typer.UI
 {
     [Cached]
-    public class TyperPlayfield : ScrollingPlayfield
+    public partial class TyperPlayfield : ScrollingPlayfield
     {
         [BackgroundDependencyLoader]
         private void load()
@@ -38,7 +38,7 @@ namespace osu.Game.Rulesets.Typer.UI
         }
     }
 
-    internal class HitBox : CompositeDrawable
+    internal partial class HitBox : CompositeDrawable
     {
         public HitBox()
         {
