@@ -2,8 +2,11 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Events;
 using osu.Framework.Utils;
@@ -47,12 +50,21 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
+                    EdgeEffect = new EdgeEffectParameters
+                    {
+                        Radius = 8,
+                        Colour = Color4Extensions.FromHex("483D8B"),
+                        Type = EdgeEffectType.Shadow,
+                    },
                     Children = new Drawable[]
                     {
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = Color4.Gray,
+                            Colour = ColourInfo.GradientVertical(
+                                Color4Extensions.FromHex("5F6A6A"),
+                                Color4Extensions.FromHex("D8BFD8")
+                            )
                         },
                         new OsuSpriteText
                         {
@@ -93,7 +105,10 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
                 wasCorrectKey = correctKey;
 
                 if (wasCorrectKey)
+                {
                     keyContent.ScaleTo(0.9f, 200, Easing.OutElastic);
+                    keyContent.RotateTo(RNG.NextSingle(30) - 15, 500, Easing.OutElastic);
+                }
 
                 UpdateResult(true);
 
@@ -108,7 +123,10 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
             bool correctKey = e.Key - Key.A == keyToHit - 'a';
 
             if (State.Value != ArmedState.Hit && correctKey)
+            {
                 keyContent.ScaleTo(1, 300, Easing.OutQuint);
+                keyContent.RotateTo(0, 300, Easing.OutQuint);
+            }
 
             base.OnKeyUp(e);
         }
