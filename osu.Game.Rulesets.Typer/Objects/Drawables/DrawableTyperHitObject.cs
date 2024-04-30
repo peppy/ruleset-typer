@@ -3,6 +3,7 @@
 
 using System;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Events;
 using osu.Framework.Utils;
@@ -18,6 +19,12 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
 {
     public partial class DrawableTyperHitObject : DrawableHitObject<TyperHitObject>
     {
+        private const double allowable_error = 150;
+
+        private bool wasCorrectKey;
+
+        private readonly Container keyContent;
+
         private readonly char keyToHit;
 
         public DrawableTyperHitObject(TyperHitObject hitObject)
@@ -28,32 +35,36 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
             Origin = Anchor.CentreLeft;
             Anchor = Anchor.CentreLeft;
 
-            Masking = true;
-            CornerRadius = 15;
-            CornerExponent = 2.5f;
-
             keyToHit = (char)RNG.Next('a', 'z' + 1);
 
             AddRangeInternal(new Drawable[]
             {
-                new Box
+                keyContent = new Container
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = Color4.Gray,
-                },
-                new OsuSpriteText
-                {
-                    Font = OsuFont.Default.With(size: 52, weight: FontWeight.Bold),
+                    Masking = true,
+                    CornerRadius = 15,
+                    CornerExponent = 2.5f,
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Text = keyToHit.ToString().ToUpper(),
-                }
+                    RelativeSizeAxes = Axes.Both,
+                    Children = new Drawable[]
+                    {
+                        new Box
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Colour = Color4.Gray,
+                        },
+                        new OsuSpriteText
+                        {
+                            Font = OsuFont.Default.With(size: 52, weight: FontWeight.Bold),
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Text = keyToHit.ToString().ToUpper(),
+                        }
+                    }
+                },
             });
         }
-
-        private const double allowable_error = 150;
-
-        private bool correctKey;
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
@@ -62,7 +73,7 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
                 if (Math.Abs(timeOffset) >= allowable_error)
                     return;
 
-                if (!correctKey)
+                if (!wasCorrectKey)
                     ApplyResult(r => r.Type = HitResult.Miss);
                 else
                     ApplyResult(r => r.Type = HitResult.Perfect);
@@ -75,16 +86,18 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
 
         protected override bool OnKeyDown(KeyDownEvent e)
         {
+            bool correctKey = e.Key - Key.A == keyToHit - 'a';
+
             if (!Result.HasResult)
             {
-                correctKey = (e.Key - Key.A == keyToHit - 'a');
+                wasCorrectKey = correctKey;
+
+                if (wasCorrectKey)
+                    keyContent.ScaleTo(0.9f, 200, Easing.OutElastic);
+
                 UpdateResult(true);
 
-                if (correctKey)
-                {
-                    this.ScaleTo(0.9f, 500, Easing.OutQuint);
-                    return true;
-                }
+                return wasCorrectKey;
             }
 
             return base.OnKeyDown(e);
@@ -92,8 +105,10 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
 
         protected override void OnKeyUp(KeyUpEvent e)
         {
-            if (e.Key - Key.A == keyToHit - 'a')
-                this.ScaleTo(1, 300, Easing.OutQuint);
+            bool correctKey = e.Key - Key.A == keyToHit - 'a';
+
+            if (State.Value != ArmedState.Hit && correctKey)
+                keyContent.ScaleTo(1, 300, Easing.OutQuint);
 
             base.OnKeyUp(e);
         }
@@ -105,12 +120,16 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
             switch (state)
             {
                 case ArmedState.Hit:
-                    this.ScaleTo(1.8f, duration, Easing.OutQuint);
+                    keyContent.ScaleTo(5f, duration, Easing.OutQuint);
+
                     this.FadeOut(duration, Easing.OutQuint).Expire();
                     break;
 
                 case ArmedState.Miss:
-                    this.FadeColour(Color4.Red, 100);
+                    keyContent.FadeColour(Color4.Red, 100);
+                    keyContent.MoveToY(100, 1000, Easing.In);
+                    keyContent.RotateTo(RNG.NextSingle(30) - 15, 1000, Easing.In);
+
                     this.FadeOut(500, Easing.InQuint).Expire();
                     break;
             }
