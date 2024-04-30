@@ -51,19 +51,26 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
             });
         }
 
+        private const double allowable_error = 150;
+
         private bool correctKey;
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
             if (userTriggered)
             {
-                if (!correctKey || Math.Abs(timeOffset) >= 100)
+                if (Math.Abs(timeOffset) >= allowable_error)
+                    return;
+
+                if (!correctKey)
                     ApplyResult(r => r.Type = HitResult.Miss);
                 else
                     ApplyResult(r => r.Type = HitResult.Perfect);
             }
-            else if (timeOffset >= 100)
+            else if (timeOffset >= allowable_error)
+            {
                 ApplyResult(r => r.Type = HitResult.Miss);
+            }
         }
 
         protected override bool OnKeyDown(KeyDownEvent e)
@@ -72,10 +79,23 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
             {
                 correctKey = (e.Key - Key.A == keyToHit - 'a');
                 UpdateResult(true);
-                return true;
+
+                if (correctKey)
+                {
+                    this.ScaleTo(0.9f, 500, Easing.OutQuint);
+                    return true;
+                }
             }
 
             return base.OnKeyDown(e);
+        }
+
+        protected override void OnKeyUp(KeyUpEvent e)
+        {
+            if (e.Key - Key.A == keyToHit - 'a')
+                this.ScaleTo(1, 300, Easing.OutQuint);
+
+            base.OnKeyUp(e);
         }
 
         protected override void UpdateHitStateTransforms(ArmedState state)
