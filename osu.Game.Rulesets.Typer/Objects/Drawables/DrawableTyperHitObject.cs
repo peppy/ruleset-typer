@@ -131,6 +131,16 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
             base.OnKeyUp(e);
         }
 
+        protected override void UpdateInitialTransforms()
+        {
+            base.UpdateInitialTransforms();
+
+            const float verticality = 80000;
+
+            Y = (keyToHit - 'a') / 26f * verticality - (verticality * 0.5f);
+            this.MoveToY(0, InitialLifetimeOffset, Easing.OutElasticHalf);
+        }
+
         protected override void UpdateHitStateTransforms(ArmedState state)
         {
             const double duration = 800;
