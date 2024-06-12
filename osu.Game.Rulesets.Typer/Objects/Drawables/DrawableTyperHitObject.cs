@@ -37,8 +37,8 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
         public DrawableTyperHitObject(TyperHitObject hitObject, Random seed)
             : base(hitObject)
         {
-            engToRusMap = "qwertyuiop[]asdfghjkl;'zxcvbnm,./"
-                          .Zip("йцукенгшщзхъфывапролджэячсмитьбю.", (e, r) =>
+            engToRusMap = "йцукенгшщзхъфывапролджэячсмитьбю."
+                          .Zip("qwertyuiop[]asdfghjkl;'zxcvbnm,./", (e, r) =>
                               new { e, r }).ToDictionary(x => x.e, x => x.r);
 
             Size = new Vector2(80);
@@ -46,7 +46,7 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
             Origin = Anchor.CentreLeft;
             Anchor = Anchor.CentreLeft;
 
-            keyToHit = (char)seed.Next('a', 'z' + 1);
+            keyToHit = (char)seed.Next('а', 'я' + 1);
 
             AddRangeInternal(new Drawable[]
             {
@@ -79,7 +79,7 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
                             Font = OsuFont.Default.With(size: 52, weight: FontWeight.Bold),
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
-                            Text = engToRusMap[keyToHit].ToString().ToUpper(),
+                            Text = keyToHit.ToString().ToUpper(),
                         }
                     }
                 },
@@ -104,9 +104,28 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
             }
         }
 
+        private bool isCorrectKey(Key key)
+        {
+            if (key < Key.A || key > Key.Z)
+            {
+                return keyToHit switch
+                {
+                    'х' => key == Key.BracketLeft,
+                    'ъ' => key == Key.BracketRight,
+                    'ж' => key == Key.Semicolon,
+                    'э' => key == Key.Quote,
+                    'б' => key == Key.Comma,
+                    'ю' => key == Key.Period,
+                    _ => false
+                };
+            }
+
+            return key - Key.A == engToRusMap[keyToHit] - 'a';
+        }
+
         protected override bool OnKeyDown(KeyDownEvent e)
         {
-            bool correctKey = e.Key - Key.A == keyToHit - 'a';
+            bool correctKey = isCorrectKey(e.Key);
 
             if (!Result.HasResult)
             {
@@ -128,7 +147,7 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
 
         protected override void OnKeyUp(KeyUpEvent e)
         {
-            bool correctKey = e.Key - Key.A == keyToHit - 'a';
+            bool correctKey = isCorrectKey(e.Key);
 
             if (State.Value != ArmedState.Hit && correctKey)
             {
@@ -145,7 +164,7 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
 
             const float verticality = 80000;
 
-            Y = (keyToHit - 'a') / 26f * verticality - (verticality * 0.5f);
+            Y = (keyToHit - 'а') / 33f * verticality - (verticality * 0.5f);
             this.MoveToY(0, InitialLifetimeOffset, Easing.OutElasticHalf);
         }
 
