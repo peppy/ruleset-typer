@@ -2,6 +2,8 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
@@ -30,9 +32,15 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
 
         private readonly char keyToHit;
 
+        private readonly Dictionary<char, char> engToRusMap;
+
         public DrawableTyperHitObject(TyperHitObject hitObject)
             : base(hitObject)
         {
+            engToRusMap = "qwertyuiop[]asdfghjkl;'zxcvbnm,./"
+                          .Zip("йцукенгшщзхъфывапролджэячсмитьбю.", (e, r) =>
+                              new { e, r }).ToDictionary(x => x.e, x => x.r);
+
             Size = new Vector2(80);
 
             Origin = Anchor.CentreLeft;
@@ -71,7 +79,7 @@ namespace osu.Game.Rulesets.Typer.Objects.Drawables
                             Font = OsuFont.Default.With(size: 52, weight: FontWeight.Bold),
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
-                            Text = keyToHit.ToString().ToUpper(),
+                            Text = engToRusMap[keyToHit].ToString().ToUpper(),
                         }
                     }
                 },
