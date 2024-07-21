@@ -45,19 +45,21 @@ namespace osu.Game.Rulesets.Typer
                     {
                         new MultiMod(new TyperModSuddenDeath(), new TyperModPerfect()),
                         new MultiMod(new TyperModDoubleTime(), new TyperModNightcore()),
+                        new ModAccuracyChallenge(),
                     };
 
                 case ModType.Automation:
                     return new Mod[]
                     {
-                        new TyperModAutoplay(),
-                        new TyperModCinema(),
+                        new MultiMod(new TyperModAutoplay(), new TyperModCinema()),
                     };
 
                 case ModType.Fun:
                     return new Mod[]
                     {
+                        new MultiMod(new ModWindUp(), new ModWindDown()),
                         new TyperModMuted(),
+                        new ModAdaptiveSpeed(),
                     };
 
                 default:
