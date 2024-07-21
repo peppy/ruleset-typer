@@ -12,8 +12,10 @@ using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Typer.Beatmaps;
 using osu.Game.Rulesets.Typer.Mods;
+using osu.Game.Rulesets.Typer.Beatmaps;
 using osu.Game.Rulesets.Typer.UI;
 using osu.Game.Rulesets.UI;
+using osu.Game.Resources.Localisation.Web;
 
 namespace osu.Game.Rulesets.Typer
 {
@@ -31,8 +33,26 @@ namespace osu.Game.Rulesets.Typer
         {
             switch (type)
             {
+                case ModType.DifficultyReduction:
+                    return new Mod[]
+                    {
+                        new TyperModNoFail(),
+                        new MultiMod(new TyperModHalfTime(), new TyperModDaycore()),
+                    };
+
+                case ModType.DifficultyIncrease:
+                    return new Mod[]
+                    {
+                        new MultiMod(new TyperModSuddenDeath(), new TyperModPerfect()),
+                        new MultiMod(new TyperModDoubleTime(), new TyperModNightcore()),
+                    };
+
                 case ModType.Automation:
-                    return new[] { new TyperModAutoplay() };
+                    return new Mod[]
+                    {
+                        new TyperModAutoplay(),
+                        new TyperModCinema(),
+                    };
 
                 default:
                     return Array.Empty<Mod>();
