@@ -54,6 +54,12 @@ namespace osu.Game.Rulesets.Typer
                         new TyperModCinema(),
                     };
 
+                case ModType.Fun:
+                    return new Mod[]
+                    {
+                        new TyperModMuted(),
+                    };
+
                 default:
                     return Array.Empty<Mod>();
             }
