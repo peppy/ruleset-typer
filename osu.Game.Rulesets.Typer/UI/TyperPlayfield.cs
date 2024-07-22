@@ -44,6 +44,7 @@ namespace osu.Game.Rulesets.Typer.UI
 
         public HitBox()
         {
+            Margin = new MarginPadding { Left = 40 };
             InternalChildren = new Drawable[]
             {
                 new OneBox(),
