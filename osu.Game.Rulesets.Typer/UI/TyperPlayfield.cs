@@ -15,11 +15,13 @@ namespace osu.Game.Rulesets.Typer.UI
     [Cached]
     public partial class TyperPlayfield : ScrollingPlayfield
     {
+        public const float HEIGHT = 80;
+
         [BackgroundDependencyLoader]
         private void load()
         {
             RelativeSizeAxes = Axes.X;
-            Height = 80;
+            Height = HEIGHT;
 
             Anchor = Anchor.CentreLeft;
             Origin = Anchor.CentreLeft;
@@ -44,7 +46,7 @@ namespace osu.Game.Rulesets.Typer.UI
 
         public HitBox()
         {
-            Margin = new MarginPadding { Left = 40 };
+            Margin = new MarginPadding { Left = TyperPlayfield.HEIGHT / 2 };
             InternalChildren = new Drawable[]
             {
                 new OneBox(),
@@ -84,7 +86,7 @@ namespace osu.Game.Rulesets.Typer.UI
                     Hollow = true,
                 };
 
-                Size = new Vector2(80);
+                Size = new Vector2(TyperPlayfield.HEIGHT);
 
                 AddRangeInternal(new Drawable[]
                 {
